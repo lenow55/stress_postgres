@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "stress-pg-python"
+version = "0.1.0"
+description = "Проект для проведения нагрузочного тестирования postgresql"
+authors = ["Новиков Илья <nov.ilucha@yandex.ru>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+SQLAlchemy = "^2.0.30"
+psycopg2-binary = "^2.9.9"
+numpy = "^1.26.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
