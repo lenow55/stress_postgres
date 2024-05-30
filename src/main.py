@@ -248,8 +248,8 @@ def gen_query() -> Iterator[Query4Execute]:
     while True:
         rand_ids_array = random_queries_ids()
         rng.shuffle(rand_ids_array)
-        for i in range(rand_ids_array):
-            func = query_functions[i]
+        for i in range(len(rand_ids_array) - 1):
+            func = query_functions[rand_ids_array[i]]
             yield func()
 
 
