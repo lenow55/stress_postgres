@@ -8,8 +8,10 @@ import json
 from multiprocessing import Queue
 from threading import Event as EventTh, Thread
 from datetime import datetime, timedelta
+from typing import Callable, Iterator
 
 
+from numpy._typing import NDArray
 from sqlalchemy import text
 import random
 import numpy as np
@@ -216,26 +218,39 @@ def gen9query() -> Query4Execute:
     return query
 
 
-def gen_query() -> Query4Execute:
-    selector = random.randint(0, 100000)
-    if selector < 46:
-        return gen9query()
-    if selector < 96:
-        return gen8query()
-    if selector < 467:
-        return gen7query()
-    if selector < 1295:
-        return gen6query()
-    if selector < 3238:
-        return gen5query()
-    if selector < 5183:
-        return gen4query()
-    if selector < 7128:
-        return gen3query()
-    if selector < 53546:
-        return gen2query()
-    else:
-        return gen1query()
+def random_queries_ids() -> NDArray:
+    query_inexes = []
+    query_inexes += [0] * 5
+    query_inexes += [1] * 5
+    query_inexes += [2] * 37
+    query_inexes += [3] * 83
+    query_inexes += [4] * 195
+    query_inexes += [5] * 195
+    query_inexes += [6] * 195
+    query_inexes += [7] * 4642
+    query_inexes += [8] * 4645
+    return np.array(query_inexes)
+
+
+def gen_query() -> Iterator[Query4Execute]:
+    rng = np.random.default_rng()
+    query_functions: list[Callable[..., Query4Execute]] = [
+        gen1query,
+        gen2query,
+        gen3query,
+        gen4query,
+        gen5query,
+        gen6query,
+        gen7query,
+        gen8query,
+        gen9query,
+    ]
+    while True:
+        rand_ids_array = random_queries_ids()
+        rng.shuffle(rand_ids_array)
+        for i in range(rand_ids_array):
+            func = query_functions[i]
+            yield func()
 
 
 def main(args):
@@ -298,10 +313,11 @@ def main(args):
     print_waiter.start()
 
     full_counts = 0
+    query_generator = gen_query()
     while not exit_event.is_set():
         try:
             queue_in.put(
-                gen_query(),
+                next(query_generator),
                 timeout=1,
             )
         except queue.Full:
