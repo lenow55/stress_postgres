@@ -235,15 +235,15 @@ def random_queries_ids() -> NDArray:
 def gen_query() -> Iterator[Query4Execute]:
     rng = np.random.default_rng()
     query_functions: list[Callable[..., Query4Execute]] = [
-        gen1query,
-        gen2query,
-        gen3query,
-        gen4query,
-        gen5query,
-        gen6query,
-        gen7query,
-        gen8query,
         gen9query,
+        gen8query,
+        gen7query,
+        gen6query,
+        gen5query,
+        gen4query,
+        gen3query,
+        gen2query,
+        gen1query,
     ]
     while True:
         rand_ids_array = random_queries_ids()
