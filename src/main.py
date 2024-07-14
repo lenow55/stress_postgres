@@ -337,10 +337,14 @@ def main(args):
             print_waiter.start()
 
     stop()
+    queue_in.close()
+    queue_in.cancel_join_thread()
     for worker in workers:
         worker.join()
 
     counts = report()
+    queue_out.close()
+    queue_out.cancel_join_thread()
     print(f"all_counts = {counts} by interval: {args.print}")
     full_counts += counts
     print(
